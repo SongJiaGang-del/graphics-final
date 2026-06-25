@@ -96,7 +96,8 @@ const pbrMats = new Map();    // 原始 PBR 材质
 const blinnMats = new Map();  // 对应的 Blinn-Phong 材质
 for (const m of pickables) {
   pbrMats.set(m, m.material);
-  const make = (mat) => blinn.makeMaterial(mat.color ?? new THREE.Color(0xcccccc));
+  // 贴图模式下 PBR 材质 color 被设为纯白，这里取原始基础色（userData.baseColor）
+  const make = (mat) => blinn.makeMaterial(new THREE.Color(mat.userData?.baseColor ?? mat.color?.getHex() ?? 0xcccccc));
   blinnMats.set(m, Array.isArray(m.material) ? m.material.map(make) : make(m.material));
 }
 function setBlinn(on) {
@@ -182,3 +183,4 @@ window.addEventListener('resize', () => {
 window.renderer = renderer;
 window.camera = camera;
 window.scene = scene;
+window.post = post;
